@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRJX Airdrop Estimator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: white;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* CTA Buttons Container */
+    .cta-container {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 32px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .cta-button:active {
+      transform: translateY(-2px);
+    }
+
+    .cta-primary {
+      background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+      color: white;
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .cta-primary:hover::before {
+      left: 100%;
+    }
+
+    .cta-secondary {
+      background: linear-gradient(135deg, #1DA1F2 0%, #0d8bd9 100%);
+      color: white;
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .cta-icon {
+      font-size: 1.5rem;
+    }
+
+    .cta-text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .cta-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+
+    .cta-subtitle {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    /* Promo Banner */
+    .promo-banner {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      padding: 18px 25px;
+      border-radius: 16px;
+      margin-bottom: 25px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
+      animation: slideDown 0.6s ease-out;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .promo-banner h3 {
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+      font-weight: 800;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .promo-banner p {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .ref-code {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.95);
+      color: #f5576c;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid #f5576c;
+    }
+
+    .ref-code:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .ref-code:active {
+      transform: scale(0.98);
+    }
+
+    .copy-hint {
+      display: block;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      opacity: 0.9;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .header h1 {
+      font-size: 3.5rem;
+      margin-bottom: 10px;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      opacity: 0.95;
+      font-weight: 300;
+    }
+
+    .content {
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+      color: #333;
+      animation: fadeInUp 0.8s ease-out;
+      backdrop-filter: blur(10px);
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section h2 {
+      color: #667eea;
+      margin-bottom: 25px;
+      font-size: 2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .input-group {
+      margin-bottom: 30px;
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 16px;
+      transition: all 0.3s;
+    }
+
+    .input-group:hover {
+      background: #f0f2f5;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-size: 1.15rem;
+      color: #2c3e50;
+    }
+
+    .tooltip {
+      cursor: help;
+      margin-left: 8px;
+      font-size: 1rem;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+      display: inline-block;
+    }
+
+    .tooltip:hover {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 14px 18px;
+      font-size: 1.15rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      transition: all 0.3s;
+      background: white;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .date-display {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 18px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .slider-container {
+      margin-top: 15px;
+    }
+
+    .slider-label {
+      display: block;
+      text-align: center;
+      font-weight: 700;
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 10px;
+      border-radius: 5px;
+      background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+      outline: none;
+      -webkit-appearance: none;
+      margin: 15px 0;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    input[type="range"]:hover {
+      opacity: 1;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+      border: 3px solid #667eea;
+      transition: transform 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+      border: 3px solid #667eea;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s;
+    }
+
+    input[type="range"]::-moz-range-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .slider-range {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      color: #666;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    .preset-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .preset-btn {
+      flex: 1;
+      min-width: 85px;
+      padding: 14px 22px;
+      border: 2px solid #e0e0e0;
+      background: white;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 1.05rem;
+      transition: all 0.3s;
+      color: #333;
+    }
+
+    .preset-btn:hover {
+      border-color: #667eea;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.25);
+    }
+
+    .preset-btn.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 25px;
+    }
+
+    .result-card {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 25px;
+      border-radius: 16px;
+      text-align: center;
+      transition: all 0.4s;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transform: scaleX(0);
+      transition: transform 0.4s;
+    }
+
+    .result-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .result-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .result-card.highlight {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .result-card.highlight:hover {
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+    }
+
+    .result-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      animation: bounce 2s infinite;
+    }
+
+    .result-label {
+      font-size: 0.95rem;
+      opacity: 0.85;
+      margin-bottom: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .result-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      word-break: break-word;
+    }
+
+    .result-value.big {
+      font-size: 2.2rem;
+      background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      margin-top: 25px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    thead {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    th {
+      padding: 18px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 18px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 1rem;
+    }
+
+    tbody tr {
+      transition: all 0.3s;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    tbody tr:hover {
+      background: #f0f4ff;
+      transform: scale(1.01);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+    }
+
+    .highlight-cell {
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .value-cell {
+      font-weight: 800;
+      color: #27ae60;
+      font-size: 1.15rem;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      opacity: 0.95;
+      font-size: 0.95rem;
+      animation: fadeIn 1s ease-in;
+    }
+
+    .footer p {
+      margin: 8px 0;
+    }
+
+    .creator-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 25px;
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .creator-link:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .error {
+      background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+      color: white;
+      padding: 18px;
+      border-radius: 12px;
+      margin: 25px 0;
+      text-align: center;
+      font-weight: 700;
+      display: none;
+      animation: shake 0.5s;
+      box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3);
+    }
+
+    .scenario-description {
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    /* Modal/Popup Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease-out;
+      padding: 20px;
+    }
+
+    .modal-overlay.hidden {
+      display: none;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      animation: scaleIn 0.4s ease-out;
+      position: relative;
+      text-align: center;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #999;
+      transition: all 0.3s;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .modal-close:hover {
+      color: #333;
+      background: #f0f0f0;
+      transform: rotate(90deg);
+    }
+
+    .modal-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: bounce 1s infinite;
+    }
+
+    .modal h2 {
+      color: #333;
+      font-size: 2rem;
+      margin-bottom: 15px;
+      font-weight: 800;
+    }
+
+    .modal p {
+      color: #666;
+      font-size: 1.15rem;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .modal-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #1DA1F2 0%, #0d8bd9 100%);
+      color: white;
+      padding: 16px 32px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(29, 161, 242, 0.4);
+    }
+
+    .modal-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(29, 161, 242, 0.5);
+    }
+
+    .modal-button:active {
+      transform: translateY(-1px);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      color: white;
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+      font-weight: 600;
+      font-size: 1rem;
+      z-index: 2000;
+      animation: slideInRight 0.4s ease-out;
+      display: none;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2.2rem;
+      }
+      
+      .content {
+        padding: 25px;
+      }
+
+      .modal {
+        padding: 30px 20px;
+      }
+
+      .modal h2 {
+        font-size: 1.6rem;
+      }
+
+      .modal p {
+        font-size: 1rem;
+      }
+
+      .promo-banner h3 {
+        font-size: 1.2rem;
+      }
+
+      .promo-banner p {
+        font-size: 1rem;
+      }
+
+      .ref-code {
+        font-size: 1.1rem;
+        padding: 8px 16px;
+      }
+
+      .cta-container {
+        flex-direction: column;
+      }
+
+      .cta-button {
+        min-width: 100%;
+      }
+
+      .cta-title {
+        font-size: 1.1rem;
+      }
+
+      .cta-subtitle {
+        font-size: 0.8rem;
+      }
+
+      .preset-btn {
+        min-width: 75px;
+        padding: 12px 18px;
+        font-size: 0.95rem;
+      }
+
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section h2 {
+        font-size: 1.6rem;
+      }
+
+      th, td {
+        padding: 12px 10px;
+        font-size: 0.9rem;
+      }
+
+      .toast {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Follow Modal -->
+  <div class="modal-overlay hidden" id="followModal">
+    <div class="modal">
+      <button class="modal-close" id="closeModal">&times;</button>
+      <div class="modal-icon">🐦</div>
+      <h2>Stay Updated!</h2>
+      <p>Follow <strong>@web3wikis</strong> on X for the latest crypto insights, airdrop alerts, and Web3 tools!</p>
+      <a href="https://x.com/web3wikis" target="_blank" rel="noopener noreferrer" class="modal-button">
+        <span>Follow @web3wikis</span>
+        <span>→</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">Referral code copied to clipboard! 🎉</div>
+
+  <div class="container">
+    <!-- CTA Buttons -->
+    <div class="cta-container">
+      <a href="https://www.prjx.com/@web3wikis" target="_blank" rel="noopener noreferrer" class="cta-button cta-primary">
+        <span class="cta-icon">🚀</span>
+        <span class="cta-text">
+          <span class="cta-title">Join PRJX Now</span>
+          <span class="cta-subtitle">The Premier DEX & LP Hub on HyperEVM</span>
+        </span>
+      </a>
+      <a href="https://x.com/web3wikis" target="_blank" rel="noopener noreferrer" class="cta-button cta-secondary">
+        <span class="cta-icon">🐦</span>
+        <span class="cta-text">
+          <span class="cta-title">Follow @web3wikis</span>
+          <span class="cta-subtitle">Stay updated with Web3 insights</span>
+        </span>
+      </a>
+    </div>
+
+    <!-- Promo Banner -->
+    <div class="promo-banner">
+      <h3>🎁 Get 10% Multiplier on PRJX Points!</h3>
+      <p>Use referral code to boost your earnings:</p>
+      <div class="ref-code" id="refCode" title="Click to copy">web3wikis</div>
+      <span class="copy-hint">👆 Click to copy</span>
+    </div>
+
+    <header class="header">
+      <h1>🚀 PRJX Airdrop Estimator</h1>
+      <p class="subtitle">Estimate your potential airdrop rewards with precision</p>
+    </header>
+
+    <div class="content">
+      <!-- Input Section -->
+      <div class="section">
+        <h2>📊 Input Parameters</h2>
+        
+        <div class="input-group">
+          <label>
+            Your Current Points
+            <span class="tooltip" title="Total points you've earned since July 14, 2025">ℹ️</span>
+          </label>
+          <input type="number" id="userPoints" value="0" min="0" placeholder="Enter your points">
+        </div>
+
+        <div class="input-group">
+          <label>
+            Estimated TGE Date
+            <span class="tooltip" title="Expected Token Generation Event / Snapshot date">ℹ️</span>
+          </label>
+          <div class="date-display" id="tgeDate">May 24, 2026</div>
+          <div class="slider-container">
+            <span class="slider-label">Days from now: <span id="daysLabel">180</span></span>
+            <input type="range" id="daysSlider" min="0" max="365" value="180">
+            <div class="slider-range">
+              <span>Today</span>
+              <span>+365 days</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>
+            Airdrop Allocation (% of Total Supply)
+            <span class="tooltip" title="Percentage of total token supply allocated to airdrop">ℹ️</span>
+          </label>
+          <div class="preset-buttons" id="airdropButtons">
+            <button class="preset-btn" data-value="5">5%</button>
+            <button class="preset-btn active" data-value="10">10%</button>
+            <button class="preset-btn" data-value="15">15%</button>
+            <button class="preset-btn" data-value="20">20%</button>
+            <button class="preset-btn" id="customAirdropBtn">Custom</button>
+          </div>
+          <div class="slider-container" id="customAirdropSlider" style="display: none;">
+            <span class="slider-label"><span id="airdropLabel">10</span>%</span>
+            <input type="range" id="airdropSlider" min="1" max="50" step="0.5" value="10">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>
+            Fully Diluted Valuation (FDV)
+            <span class="tooltip" title="Total market cap if all tokens were in circulation">ℹ️</span>
+          </label>
+          <div class="preset-buttons" id="fdvButtons">
+            <button class="preset-btn" data-value="50000000">$50M</button>
+            <button class="preset-btn active" data-value="100000000">$100M</button>
+            <button class="preset-btn" data-value="500000000">$500M</button>
+            <button class="preset-btn" data-value="1000000000">$1B</button>
+            <button class="preset-btn" data-value="2000000000">$2B</button>
+            <button class="preset-btn" id="customFdvBtn">Custom</button>
+          </div>
+          <div class="slider-container" id="customFdvSlider" style="display: none;">
+            <span class="slider-label" id="fdvLabel">$100M</span>
+            <input type="range" id="fdvSlider" min="10000000" max="5000000000" step="10000000" value="100000000">
+          </div>
+        </div>
+      </div>
+
+      <div class="error" id="error"></div>
+
+      <!-- Results Section -->
+      <div class="section" id="resultsSection">
+        <h2>💰 Your Estimated Airdrop</h2>
+        <div class="results-grid" id="resultsGrid"></div>
+      </div>
+
+      <!-- Scenario Table -->
+      <div class="section">
+        <h2>📈 Multiple Scenarios</h2>
+        <p class="scenario-description">
+          Compare your potential airdrop value across different allocation percentages and FDV scenarios
+        </p>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Airdrop %</th>
+                <th>FDV</th>
+                <th>Your Tokens</th>
+                <th>Token Price</th>
+                <th>Estimated Value</th>
+              </tr>
+            </thead>
+            <tbody id="scenarioTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>Point system started: July 14, 2025 | Daily distribution: 1M points</p>
+      <p style="font-size: 0.9rem; opacity: 0.85; margin-top: 10px;">
+        ⚠️ This is an estimation tool. Actual airdrop amounts may vary.
+      </p>
+      <a href="https://x.com/web3wikis" target="_blank" rel="noopener noreferrer" class="creator-link">
+        <span>Created by @web3wikis</span>
+        <span>🐦</span>
+      </a>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
