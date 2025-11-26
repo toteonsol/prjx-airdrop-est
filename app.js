@@ -245,7 +245,7 @@ document.getElementById('airdropButtons').addEventListener('click', (e) => {
       state.customAirdrop = false;
       document.getElementById('customAirdropSlider').style.display = 'none';
       state.airdropPercent = Number(e.target.dataset.value);
-      renderResults();
+      renderResults();  // ENSURE THIS LINE EXISTS
     }
   }
 });
@@ -269,8 +269,8 @@ document.getElementById('fdvButtons').addEventListener('click', (e) => {
     } else {
       state.customFdv = false;
       document.getElementById('customFdvSlider').style.display = 'none';
-      state.fdv = Number(e.target.value);
-      renderResults();
+      state.fdv = Number(e.target.dataset.value);
+      renderResults();  // ADD THIS LINE - it was missing!
     }
   }
 });
