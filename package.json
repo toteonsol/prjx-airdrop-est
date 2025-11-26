@@ -1,0 +1,7 @@
+{
+  "name": "prjx-airdrop-estimator",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npx serve ."
+  }
+}
